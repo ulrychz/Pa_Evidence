@@ -1,4 +1,5 @@
 ﻿@page "/evidence"
+@inject IJSRuntime JS
 
 <PageTitle>Evidence</PageTitle>
 
@@ -8,10 +9,36 @@
     <label>Datum: <input type="date" @bind-value=Polozka.Datum /> </label>
     <label>Náklady: <input type="number" @bind-value=Polozka.Naklady /> </label>
     <label>Výnosy: <InputNumber @bind-Value=Polozka.Vynosy /> </label>
-    <button @onclick="Pridat" >Přidat</button>
+    <label>Popis: <input type="text" @bind=Polozka.Popis></label>
+    @if (JeEditace)
+    {
+        <button @onclick="UkonciEditaci">Ukonči editaci</button>
+    }
+    else
+    {
+        <button @onclick="Pridat" >Přidat</button>
+    }
+    
 </div>
 
 <div class="p-2 border">
+    <div class="p-2 border">
+        <label><input type="checkbox" @bind-value=JeFiltrace/> Zobrazit filtr</label>
+        @if (JeFiltrace)
+        {
+            <div>
+                Zisk
+                <select @bind="VybranyFiltr">
+                    <option value="<">&lt;</option>
+                    <option value=">">&gt;</option>
+                    <option value="=">=</option>
+                </select>
+                <InputNumber @bind-Value="@FiltrHodnota" />
+                , Popis = <input type="text" @bind=FiltrPopis />
+                <button @onclick="FiltrujPolozky">Filtruj</button>
+            </div>
+        }
+    </div>
     <table class="table table-striped">
         <thead>
             <tr>
@@ -19,16 +46,26 @@
                 <th>Náklady</th>
                 <th>Výnosy</th>
                 <th>Zisk/Ztráta</th>
+                <th>Popis</th>
+                <th>Smazat</th>
+                <th>Edituj</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in PolozkyList)
+            @foreach (var item in JeFiltrace? PolozkyFiltrList : PolozkyList)
             {
                 <tr>
                     <td>@item.Datum</td>
                     <td>@item.Naklady</td>
                     <td>@item.Vynosy</td>
                     <td>@item.Zisk</td>
+                    <td>@item.Popis</td>
+                    <td>
+                        <button class="btn btn-danger" @onclick="()=>SmazatZaznam(item)">&times;</button>
+                    </td>
+                    <td>
+                        <button class="btn btn-info" @onclick="()=>EditujZaznam(item)">&plusmn;</button>
+                    </td>
                 </tr>
             }
         </tbody>

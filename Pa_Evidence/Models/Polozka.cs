@@ -9,11 +9,12 @@
         {
             Datum = DateOnly.FromDateTime(DateTime.Today);
         }
-        public Polozka(DateOnly datum, int naklady, int vynosy)
+        public Polozka(DateOnly datum, int naklady, int vynosy, string popis)
         {
             Datum = datum;
             Naklady = naklady;
             Vynosy = vynosy;
+            Popis = popis;
         }
         public DateOnly Datum { get; set; }
         public int Naklady
@@ -37,7 +38,7 @@
                 }
             }
         }
-
+        public string Popis { get; set; }
         public int Zisk => Vynosy - Naklady;
     }
 }
